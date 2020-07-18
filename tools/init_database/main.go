@@ -24,10 +24,10 @@ type InitDataType struct {
 // 管理员数据模型
 type DbManager struct {
 	gorm.Model
-	Account  string `gorm: "type:varchar(16);not null;unique_index"`
+	Account  string `gorm:"type:varchar(16);not null;unique_index"`
 	Password string `gorm:"type:varchar(32);not null"`
 	Name     string `gorm:"type:varchar(16);not null"`
-	Gender   string `gorm"type:varchar(16)"`
+	Gender   string `gorm:"type:varchar(16)"`
 }
 
 // 获取当前运行程序的路径
