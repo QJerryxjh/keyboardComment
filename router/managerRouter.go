@@ -8,5 +8,6 @@ func ManagerRouter(baseRoutePath string) {
 	r := Router.Group("/" + baseRoutePath)
 	{
 		r.GET("/list", managerController.GetManagers)
+		r.POST("/info", managerController.GetManagerInfo)
 	}
 }
