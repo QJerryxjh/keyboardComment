@@ -9,5 +9,6 @@ func ManagerRouter(baseRoutePath string) {
 	{
 		r.GET("/list", managerController.GetManagers)
 		r.POST("/info", managerController.GetManagerInfo)
+		r.POST("/delete", managerController.DeleteManager)
 	}
 }

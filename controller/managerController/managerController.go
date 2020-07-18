@@ -39,7 +39,7 @@ func GetManagers(c *gin.Context) {
 	})
 }
 
-// 获取管理员信息
+// 根据id获取管理员信息
 func GetManagerInfo(c *gin.Context) {
 	managerId := c.PostForm("id")
 	if managerId == "" {
@@ -71,5 +71,30 @@ func GetManagerInfo(c *gin.Context) {
 		"msg":  "success",
 		"data": resManager,
 	})
+}
 
+// 根据id删除管理员条目
+func DeleteManager(c *gin.Context) {
+	managerId := c.PostForm("id")
+	if managerId == "" {
+		c.JSON(http.StatusOK, gin.H{
+			"code": 400,
+			"msg":  "缺少id字段",
+		})
+		return
+	}
+	var manager model.DbManager
+	err := dbs.DB.Where("id = ?", managerId).First(&manager).Delete(&manager).Error
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"code": 500,
+			"msg":  "failed",
+			"err":  err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"code": 200,
+		"msg":  "success",
+	})
 }
