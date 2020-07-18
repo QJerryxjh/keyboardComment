@@ -98,3 +98,51 @@ func DeleteManager(c *gin.Context) {
 		"msg":  "success",
 	})
 }
+
+// 增加管理员
+func CreateManager(c *gin.Context) {
+	account := c.PostForm("account")
+	if account == "" {
+		c.JSON(http.StatusOK, gin.H{
+			"code": 400,
+			"msg":  "缺少账号参数",
+		})
+		return
+	}
+	password := c.PostForm("password")
+	if password == "" {
+		c.JSON(http.StatusOK, gin.H{
+			"code": 500,
+			"msg":  "缺少密码字段参数",
+		})
+		return
+	}
+	name := c.PostForm("name")
+	if name == "" {
+		c.JSON(http.StatusOK, gin.H{
+			"code": 500,
+			"msg":  "缺少用户名字段参数",
+		})
+		return
+	}
+	gender := c.DefaultPostForm("gender", "male")
+	manager := model.DbManager{
+		Account:  account,
+		Password: password,
+		Name:     name,
+		Gender:   gender,
+	}
+	err := dbs.DB.Create(&manager).Error
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"code": 500,
+			"msg":  "failed",
+			"err":  err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"code": 200,
+		"msg":  "success",
+	})
+}
