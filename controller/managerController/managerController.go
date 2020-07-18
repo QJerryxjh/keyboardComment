@@ -146,3 +146,68 @@ func CreateManager(c *gin.Context) {
 		"msg":  "success",
 	})
 }
+
+// 更新管理员信息
+func UpdateManager(c *gin.Context) {
+	managerId := c.PostForm("id")
+	if managerId == "" {
+		c.JSON(http.StatusOK, gin.H{
+			"code": 400,
+			"msg":  "缺少id参数",
+		})
+		return
+	}
+	account := c.PostForm("account")
+	if account == "" {
+		c.JSON(http.StatusOK, gin.H{
+			"code": 400,
+			"msg":  "缺少账号参数",
+		})
+		return
+	}
+	password := c.PostForm("password")
+	if password == "" {
+		c.JSON(http.StatusOK, gin.H{
+			"code": 500,
+			"msg":  "缺少密码字段参数",
+		})
+		return
+	}
+	name := c.PostForm("name")
+	if name == "" {
+		c.JSON(http.StatusOK, gin.H{
+			"code": 500,
+			"msg":  "缺少用户名字段参数",
+		})
+		return
+	}
+	gender := c.DefaultPostForm("gender", "male")
+	var manager model.DbManager
+	var count int
+	err := dbs.DB.Where("id = ?", managerId).First(&manager).Count(&count).Error
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"code": 500,
+			"msg":  "failed",
+			"err":  err.Error(),
+		})
+		return
+	}
+	manager.Account = account
+	manager.Name = name
+	manager.Gender = gender
+	manager.Password = password
+	err = dbs.DB.Save(&manager).Error
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"code": 500,
+			"msg":  "failed",
+			"err":  err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"code": 200,
+		"msg":  "success",
+	})
+}
