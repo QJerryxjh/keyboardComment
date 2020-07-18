@@ -19,6 +19,8 @@ var Router *gin.Engine
 func SetupRouter() {
 	Router = gin.Default()
 
+	ManagerRouter("manager")
+
 	Router.NoRoute(func(ctx *gin.Context) {
 		ctx.String(http.StatusNotFound, "404")
 	})
