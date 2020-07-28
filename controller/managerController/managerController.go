@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/gorm"
 )
 
 // 获取管理员列表
@@ -126,13 +127,34 @@ func CreateManager(c *gin.Context) {
 		return
 	}
 	gender := c.DefaultPostForm("gender", "male")
+	selectManager := model.DbManager{}
+	var count int
+	err := dbs.DB.Where("account = ?", account).First(&selectManager).Count(&count).Error
+
+	if err != nil && err != gorm.ErrRecordNotFound {
+		c.JSON(http.StatusOK, gin.H{
+			"code": 500,
+			"msg":  "failed",
+			"err":  err.Error(),
+		})
+		return
+	} else if err == nil {
+		c.JSON(http.StatusOK, gin.H{
+			"code": 500,
+			"msg":  "账号已存在",
+		})
+		return
+	} else if err == gorm.ErrRecordNotFound {
+		err = nil
+	}
+
 	manager := model.DbManager{
 		Account:  account,
 		Password: password,
 		Name:     name,
 		Gender:   gender,
 	}
-	err := dbs.DB.Create(&manager).Error
+	err = dbs.DB.Create(&manager).Error
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"code": 500,

@@ -11,6 +11,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -18,6 +19,8 @@ var Router *gin.Engine
 
 func SetupRouter() {
 	Router = gin.Default()
+
+	Router.Use(cors.Default())
 
 	ManagerRouter("manager")
 
